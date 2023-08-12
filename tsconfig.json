@@ -1,0 +1,12 @@
+{
+    "extends": "./frontend/tsconfig.json",
+    "references": [
+      {
+        "path": "./frontend"
+      },
+      {
+        "path": "./backend"
+      }
+    ]
+  }
+  

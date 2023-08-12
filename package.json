@@ -1,21 +1,24 @@
 {
-  "name": "@frontend/source",
-  "version": "0.0.0",
-  "license": "MIT",
-  "scripts": {},
+  "name": "monorepo",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.2.1"
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "start": "lerna run start --parallel",
+    "storybook": "cd frontend && yarn storybook",
+    "test": "lerna run test --parallel",
+    "lint": "lerna run lint"
   },
   "devDependencies": {
-    "@nx/workspace": "16.6.0",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.10.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "nx": "16.6.0",
-    "nx-cloud": "latest",
+    "lerna": "^7.1.4",
     "prettier": "^3.0.1",
     "typescript": "^5.1.6"
   }
