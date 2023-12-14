@@ -25,6 +25,17 @@ export class UsersService {
       profile: 'picture',
       points: 0,
     },
+    {
+      id: 2,
+      user: 'Just',
+      firstName: 'Trying',
+      lastName: 'Smith',
+      userName: 'goat4552',
+      email: 'just.trying@gmail.com',
+      password: 'heloof123',
+      profile: 'picture',
+      points: 0,
+    },
   ];
 
   getAllUsers() {
@@ -37,5 +48,22 @@ export class UsersService {
       console.log(`User ${id} does not exist`);
     }
     return user;
+  }
+
+  deleteUserById(id : number){
+    const newUsers = this.users.filter((user) => user.id !== id)
+    if(newUsers === this.users){
+      return "User does not exist"
+    }
+    this.users = newUsers
+    return `User successfully deleted`
+
+    // try {
+    //   await User.findOneAndUpdate({_id: user_name},{$pull: {addedMovies: {id: movie, media_type:type}}})
+    //   return res.status(200).send("Movie successfully deleted")
+    // }
+    // catch (error) {
+    //   res.send(error)
+    // }
   }
 }
