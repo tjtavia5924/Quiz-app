@@ -1,10 +1,14 @@
-export interface IUser extends Document {
-  userId: string;
+import { Schema } from '@nestjs/mongoose';
+
+
+export interface Iuser extends Document {
+  _id: string;
+  user: string;
   firstName: string;
   lastName: string;
   userName: string;
   email: string;
   password: string;
-  profile?: ImageBitmap;
+  profile: string;
   points: number;
 }

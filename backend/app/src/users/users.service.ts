@@ -1,15 +1,18 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { promises } from 'dns';
 import { Model } from 'mongoose';
-import { IUser } from './users.interface';
+// import { Iuser } from './users.interface';
+import { User } from './users.model';
 import { InjectModel } from '@nestjs/mongoose';
+import { UserDto } from './dto/UserDto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel('User')
-    private readonly userModel:Model <IUser>
+    private readonly userModel:Model<User>
   ){}
+  private readonly logger = new Logger(UsersService.name);
 
   private users = [
     {
@@ -51,17 +54,44 @@ export class UsersService {
   //   return this.users;
   // }
 
-  async getAllUsers(): Promise<IUser[]> {
+  async getAllUsers(): Promise<UserDto[]> {
     const userData = await this.userModel.find();
+    this.logger.log(`Users found: ${userData}`);
     if(!userData || userData.length == 0){
       throw new NotFoundException("Users data not found");
     }
-    console.log(userData);
-    return userData;
+    const usersDTO : UserDto[] =  userData.map(user => ({
+      userId: user._id,
+      user: user.user,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userName: user.userName,
+      email: user.email,
+      password: user.password,
+      profile: user.profile,
+      points: user.points
+    }));
+
+    return usersDTO;
   }
+
+  async findById(userId: string): Promise<User| null> {
+    try {
+      const user = await this.userModel.findById(userId).exec();
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+      return user;
+    } catch (error) {
+      // Handle any other errors that might occur during the database query
+      throw new NotFoundException('User not found');
+    }
+  }
+
 
   getUserById(id: number) {
     const user = this.users.find((user) => user.id === id);
+    console.log(user);
     if (!user) {
       console.log(`User ${id} does not exist`);
     }
