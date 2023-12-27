@@ -54,40 +54,14 @@ export class UsersService {
   //   return this.users;
   // }
 
-  async getAllUsers(): Promise<UserDto[]> {
+  async getAllUsers(): Promise<User[]> {
     const userData = await this.userModel.find();
-    this.logger.log(`Users found: ${userData}`);
     if(!userData || userData.length == 0){
       throw new NotFoundException("Users data not found");
     }
-    const usersDTO : UserDto[] =  userData.map(user => ({
-      userId: user._id,
-      user: user.user,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      userName: user.userName,
-      email: user.email,
-      password: user.password,
-      profile: user.profile,
-      points: user.points
-    }));
-
-    return usersDTO;
+    console.log(userData);
+    return userData;
   }
-
-  async findById(userId: string): Promise<User| null> {
-    try {
-      const user = await this.userModel.findById(userId).exec();
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
-      return user;
-    } catch (error) {
-      // Handle any other errors that might occur during the database query
-      throw new NotFoundException('User not found');
-    }
-  }
-
 
   getUserById(id: number) {
     const user = this.users.find((user) => user.id === id);
@@ -98,13 +72,13 @@ export class UsersService {
     return user;
   }
 
-  deleteUserById(id : number){
+  deleteUserById(id: number) {
     const newUsers = this.users.filter((user) => user.id !== id)
     if(newUsers === this.users){
-      return "User does not exist"
+      return 'User does not exist';
     }
-    this.users = newUsers
-    return `User successfully deleted`
+    this.users = newUsers;
+    return `User successfully deleted`;
 
     // try {
     //   await User.findOneAndUpdate({_id: user_name},{$pull: {addedMovies: {id: movie, media_type:type}}})

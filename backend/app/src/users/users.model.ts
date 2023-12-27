@@ -32,5 +32,3 @@ export interface User extends Document{
     points: number
 
 }
-
-
