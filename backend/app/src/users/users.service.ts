@@ -8,8 +8,8 @@ import { InjectModel } from '@nestjs/mongoose';
 export class UsersService {
   constructor(
     @InjectModel('User')
-    private readonly userModel:Model <IUser>
-  ){}
+    private readonly userModel: Model<IUser>,
+  ) {}
 
   private users = [
     {
@@ -51,13 +51,31 @@ export class UsersService {
   //   return this.users;
   // }
 
-  async getAllUsers(): Promise<IUser[]> {
-    const userData = await this.userModel.find();
-    if(!userData || userData.length == 0){
-      throw new NotFoundException("Users data not found");
-    }
-    console.log(userData);
-    return userData;
+  // async getAllUsers(): {
+  //   // const userData = await this.userModel.find().exec();
+  //   // console.log(userData);
+  //   // if (!userData || userData.length == 0) {
+  //   //   throw new NotFoundException('Users data not found');
+  //   // }
+  //   // console.log(userData);
+  //   // return userData;
+  //   const usersData = await this.userModel.find().exec();
+  //   return usersData as User[];
+  // }
+
+  async getAllUsers() {
+    const users = await this.userModel.find().exec();
+    console.log(users);
+    return users.map((user) => ({
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userName: user.userName,
+      email: user.email,
+      password: user.password,
+      profile: user.profile,
+      points: user.points,
+    }));
   }
 
   getUserById(id: number) {
@@ -68,13 +86,13 @@ export class UsersService {
     return user;
   }
 
-  deleteUserById(id : number){
+  deleteUserById(id: number) {
     const newUsers = this.users.filter((user) => user.id !== id)
     if(newUsers === this.users){
-      return "User does not exist"
+      return 'User does not exist';
     }
-    this.users = newUsers
-    return `User successfully deleted`
+    this.users = newUsers;
+    return `User successfully deleted`;
 
     // try {
     //   await User.findOneAndUpdate({_id: user_name},{$pull: {addedMovies: {id: movie, media_type:type}}})
