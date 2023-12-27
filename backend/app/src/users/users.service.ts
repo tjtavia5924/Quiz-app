@@ -1,7 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { promises } from 'dns';
+import { Model } from 'mongoose';
+import { IUser } from './users.interface';
+import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class UsersService {
+  constructor(
+    @InjectModel('User')
+    private readonly userModel:Model <IUser>
+  ){}
+
   private users = [
     {
       id: 1,
@@ -38,8 +47,17 @@ export class UsersService {
     },
   ];
 
-  getAllUsers() {
-    return this.users;
+  // getAllUsers() {
+  //   return this.users;
+  // }
+
+  async getAllUsers(): Promise<IUser[]> {
+    const userData = await this.userModel.find();
+    if(!userData || userData.length == 0){
+      throw new NotFoundException("Users data not found");
+    }
+    console.log(userData);
+    return userData;
   }
 
   getUserById(id: number) {
