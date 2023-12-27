@@ -9,7 +9,7 @@ import userModel from './users/Schema/userschema';
   // imports: [UsersModule],
   imports:[
     UsersModule,
-    MongooseModule.forRoot('mongodb+srv://mongo:GENwdWjKD7Qy4Pk@cluster1.n5qimr9.mongodb.net/tester?retryWrites=true&w=majority')],
+    MongooseModule.forRoot('mongodb+srv://mongo:<Password>@cluster1.n5qimr9.mongodb.net/tester?retryWrites=true&w=majority')],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -54,13 +54,25 @@ export class UsersService {
   //   return this.users;
   // }
 
-  async getAllUsers(): Promise<User[]> {
+  async getAllUsers(): Promise<UserDto[]> {
     const userData = await this.userModel.find();
+    this.logger.log(`Users found: ${userData}`);
     if(!userData || userData.length == 0){
       throw new NotFoundException("Users data not found");
     }
-    console.log(userData);
-    return userData;
+    const usersDto : UserDto[] = userData.map(user => ({
+      userId: user._id,
+      user: user.user,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userName: user.userName,
+      email: user.email,
+      password: user.password,
+      profile: user.profile,
+      points: user.points,
+    }));
+  
+    return usersDto;
   }
 
   getUserById(id: number) {
