@@ -2,7 +2,7 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './users.model';
-// import { UserDto } from './dto/UserDto';
+import { UserDto } from './dto/UserDto';
 
 @Injectable()
 export class UsersService {
@@ -68,5 +68,14 @@ export class UsersService {
       console.log(`User ${id} does not exist`);
     }
     return user;
+  }
+
+  deleteUserById(id: number) {
+    const newUsers = this.users.filter((user) => user.id !== id)
+    if(newUsers === this.users){
+      return 'User does not exist';
+    }
+    this.users = newUsers;
+    return `User successfully deleted`;
   }
 }
