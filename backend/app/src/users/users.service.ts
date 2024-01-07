@@ -8,8 +8,8 @@ import { UserDto } from './dto/UserDto';
 export class UsersService {
   constructor(
     @InjectModel('User')
-    private readonly userModel:Model<User>
-  ){}
+    private readonly userModel: Model<User>,
+  ) { }
   private readonly logger = new Logger(UsersService.name);
 
   private users = [
@@ -44,10 +44,10 @@ export class UsersService {
   async getAllUsers(): Promise<UserDto[]> {
     const userData = await this.userModel.find();
     this.logger.log(`Users found: ${userData}`);
-    if(!userData || userData.length == 0){
-      throw new NotFoundException("Users data not found");
+    if (!userData || userData.length == 0) {
+      throw new NotFoundException('Users data not found');
     }
-    const usersDto : UserDto[] = userData.map(user => ({
+    const usersDto: UserDto[] = userData.map((user) => ({
       userId: user._id,
       user: user.user,
       firstName: user.firstName,
@@ -67,15 +67,64 @@ export class UsersService {
     if (!user) {
       console.log(`User ${id} does not exist`);
     }
-    return user;
+    return {
+      userId: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      password: user.password,
+      points: user.points,
+      profile: user.profile,
+    };
+  }
+
+  async updateUser(
+    userId: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+
+    profile?: string,
+  ) {
+    const updatedUser = await this.findUser(userId);
+    if (firstName) {
+      updatedUser.firstName = firstName;
+    }
+    if (lastName) {
+      updatedUser.lastName = lastName;
+    }
+    if (email) {
+      updatedUser.email = email;
+    }
+    if (password) {
+      updatedUser.password = password;
+    }
+    if (profile) {
+      updatedUser.profile = profile;
+    }
+    updatedUser.save();
   }
 
   deleteUserById(id: number) {
-    const newUsers = this.users.filter((user) => user.id !== id)
-    if(newUsers === this.users){
+    const newUsers = this.users.filter((user) => user.id !== id);
+    if (newUsers === this.users) {
       return 'User does not exist';
     }
     this.users = newUsers;
     return `User successfully deleted`;
+  }
+
+  private async findUser(userId: string): Promise<User> {
+    let user;
+    try {
+      user = await this.userModel.findById(userId);
+    } catch (error) {
+      throw new NotFoundException('Could not find user.');
+    }
+    if (!user) {
+      throw new NotFoundException('Could not find user.');
+    }
+    return user;
   }
 }

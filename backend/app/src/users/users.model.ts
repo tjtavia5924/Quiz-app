@@ -1,4 +1,4 @@
-import * as mongoose from "mongoose"
+import * as mongoose from 'mongoose';
 // import { Schema } from '@nestjs/mongoose';
 
 export const UserSchema = new mongoose.Schema({
@@ -10,20 +10,18 @@ export const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     profile: { type: String, required: false },
     points: { type: Number, required: true },
-})
-
+});
 
 // @Schema({ collection: 'data' })
-export interface User extends Document{
+export interface User extends mongoose.Document {
     _id: string;
     user: string;
-    userId: string,
-    firstName: string,
-    lastName: string,
-    userName: string,
-    email: string,
-    password: string,
-    profile: string,
-    points: number
-
+    userId: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
+    email: string;
+    password: string;
+    profile: string;
+    points: number;
 }
