@@ -1,7 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from './users.model';
+import { UserDto } from './dto/UserDto';
 
 @Injectable()
 export class UsersService {
+  constructor(
+    @InjectModel('User')
+    private readonly userModel:Model<User>
+  ){}
+  private readonly logger = new Logger(UsersService.name);
+
   private users = [
     {
       id: 1,
@@ -27,8 +37,29 @@ export class UsersService {
     },
   ];
 
-  getAllUsers() {
-    return this.users;
+  // getAllUsers() {
+  //   return this.users;
+  // }
+
+  async getAllUsers(): Promise<UserDto[]> {
+    const userData = await this.userModel.find();
+    this.logger.log(`Users found: ${userData}`);
+    if(!userData || userData.length == 0){
+      throw new NotFoundException("Users data not found");
+    }
+    const usersDto : UserDto[] = userData.map(user => ({
+      userId: user._id,
+      user: user.user,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      userName: user.userName,
+      email: user.email,
+      password: user.password,
+      profile: user.profile,
+      points: user.points,
+    }));
+
+    return usersDto;
   }
 
   getUserById(id: number) {
@@ -37,5 +68,14 @@ export class UsersService {
       console.log(`User ${id} does not exist`);
     }
     return user;
+  }
+
+  deleteUserById(id: number) {
+    const newUsers = this.users.filter((user) => user.id !== id)
+    if(newUsers === this.users){
+      return 'User does not exist';
+    }
+    this.users = newUsers;
+    return `User successfully deleted`;
   }
 }
