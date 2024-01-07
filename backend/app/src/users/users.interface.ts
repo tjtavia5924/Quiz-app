@@ -1,6 +1,3 @@
-import { Schema } from '@nestjs/mongoose';
-
-
 export interface Iuser extends Document {
   _id: string;
   user: string;
