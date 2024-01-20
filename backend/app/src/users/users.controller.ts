@@ -1,6 +1,6 @@
-import { Controller, Delete, Get, Param, Logger } from '@nestjs/common';
+import { Controller, Delete, Get, Param } from '@nestjs/common';
 import { UsersService } from './users.service';
-// const logger = new Logger('MyLogger');
+
 
 @Controller('users')
 export class UsersController {
