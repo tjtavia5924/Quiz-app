@@ -12,35 +12,6 @@ export class UsersService {
   ) { }
   private readonly logger = new Logger(UsersService.name);
 
-  private users = [
-    {
-      id: 1,
-      user: 'slug',
-      firstName: 'Hurty',
-      lastName: 'Smith',
-      userName: 'goat4552',
-      email: 'Jack.Smith@gmail.com',
-      password: 'heloof123',
-      profile: 'picture',
-      points: 5,
-    },
-    {
-      id: 9,
-      user: 'cappers',
-      firstName: 'Jack',
-      lastName: 'Smith',
-      userName: 'goat4552',
-      email: 'Jack.Smith@gmail.com',
-      password: 'heloof123',
-      profile: 'picture',
-      points: 0,
-    },
-  ];
-
-  // getAllUsers() {
-  //   return this.users;
-  // }
-
   async getAllUsers(): Promise<UserDto[]> {
     const userData = await this.userModel.find();
     this.logger.log(`Users found: ${userData}`);
@@ -62,19 +33,20 @@ export class UsersService {
     return usersDto;
   }
 
-  getUserById(id: number) {
-    const user = this.users.find((user) => user.id === id);
-    if (!user) {
-      console.log(`User ${id} does not exist`);
+  async getUserById(id: string): Promise<UserDto> {
+    const userData = await this.userModel.findById(id);
+    if (!userData) {
+      throw new NotFoundException(`User with id ${id} not found!`);
     }
     return {
-      userId: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      password: user.password,
-      points: user.points,
-      profile: user.profile,
+      userId: userData._id,
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      userName: userData.userName,
+      email: userData.email,
+      password: userData.password,
+      profile: userData.profile,
+      points: userData.points,
     };
   }
 
@@ -106,13 +78,13 @@ export class UsersService {
     updatedUser.save();
   }
 
-  deleteUserById(id: number) {
-    const newUsers = this.users.filter((user) => user.id !== id);
-    if (newUsers === this.users) {
-      return 'User does not exist';
+  async deleteUserById(id: string) {
+    const deletedUser = await this.userModel.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new NotFoundException(`User with id ${id} not found!`);
+    } else {
+      return `User with id ${id} succesfully deleted!`;
     }
-    this.users = newUsers;
-    return `User successfully deleted`;
   }
 
   private async findUser(userId: string): Promise<User> {
