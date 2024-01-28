@@ -19,6 +19,7 @@ export class UsersController {
 
   @Patch(':id')
   async updateUser(
+    @Param('id') id: string,
     @Body('firstName') firstName: string,
     @Body('lastName') lastName: string,
     @Body('email') email: string,
@@ -27,11 +28,11 @@ export class UsersController {
     @Body('profile') profile?: string,
   ) {
     await this.usersService.updateUser(
+      id,
       firstName,
       lastName,
       email,
       password,
-
       profile,
     );
     return null;

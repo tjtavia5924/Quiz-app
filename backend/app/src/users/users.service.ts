@@ -50,8 +50,17 @@ export class UsersService {
     };
   }
 
+  async deleteUserById(id: string) {
+    const deletedUser = await this.userModel.findByIdAndDelete(id);
+    if (!deletedUser) {
+      throw new NotFoundException(`User with id ${id} not found!`);
+    } else {
+      return `User with id ${id} succesfully deleted!`;
+    }
+  }
+
   async updateUser(
-    userId: string,
+    id: string,
     firstName: string,
     lastName: string,
     email: string,
@@ -59,7 +68,8 @@ export class UsersService {
 
     profile?: string,
   ) {
-    const updatedUser = await this.findUser(userId);
+    console.log(id);
+    const updatedUser = await this.findUser(id);
     if (firstName) {
       updatedUser.firstName = firstName;
     }
@@ -78,21 +88,12 @@ export class UsersService {
     updatedUser.save();
   }
 
-  async deleteUserById(id: string) {
-    const deletedUser = await this.userModel.findByIdAndDelete(id);
-    if (!deletedUser) {
-      throw new NotFoundException(`User with id ${id} not found!`);
-    } else {
-      return `User with id ${id} succesfully deleted!`;
-    }
-  }
-
   private async findUser(userId: string): Promise<User> {
     let user;
     try {
       user = await this.userModel.findById(userId);
     } catch (error) {
-      throw new NotFoundException('Could not find user.');
+      throw new NotFoundException('There is an error. Could not find user.');
     }
     if (!user) {
       throw new NotFoundException('Could not find user.');
