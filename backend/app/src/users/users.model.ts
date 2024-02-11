@@ -13,7 +13,7 @@ export const UserSchema = new mongoose.Schema({
 });
 
 // @Schema({ collection: 'data' })
-export interface User extends Document {
+export interface User extends mongoose.Document {
   _id: string;
   user: string;
   userId: string;

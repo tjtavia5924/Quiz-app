@@ -9,7 +9,7 @@ export class UsersService {
   constructor(
     @InjectModel('User')
     private readonly userModel: Model<User>,
-  ) {}
+  ) { }
   private readonly logger = new Logger(UsersService.name);
 
   async getAllUsers(): Promise<UserDto[]> {
@@ -38,7 +38,6 @@ export class UsersService {
     if (!userData) {
       throw new NotFoundException(`User with id ${id} not found!`);
     }
-
     return {
       userId: userData._id,
       firstName: userData.firstName,
@@ -58,5 +57,47 @@ export class UsersService {
     } else {
       return `User with id ${id} succesfully deleted!`;
     }
+  }
+
+  async updateUser(
+    id: string,
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string,
+
+    profile?: string,
+  ) {
+    console.log(id);
+    const updatedUser = await this.findUser(id);
+    if (firstName) {
+      updatedUser.firstName = firstName;
+    }
+    if (lastName) {
+      updatedUser.lastName = lastName;
+    }
+    if (email) {
+      updatedUser.email = email;
+    }
+    if (password) {
+      updatedUser.password = password;
+    }
+    if (profile) {
+      updatedUser.profile = profile;
+    }
+    updatedUser.save();
+  }
+
+  private async findUser(userId: string): Promise<User> {
+    let user;
+    try {
+      user = await this.userModel.findById(userId);
+    } catch (error) {
+      throw new NotFoundException('There is an error. Could not find user.');
+    }
+    if (!user) {
+      throw new NotFoundException('Could not find user.');
+    }
+    return user;
   }
 }
