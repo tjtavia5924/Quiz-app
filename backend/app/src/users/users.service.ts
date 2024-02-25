@@ -3,13 +3,14 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from './users.model';
 import { UserDto } from './dto/UserDto';
+import { CreateUserDto } from './dto/CreateUserDto';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel('User')
     private readonly userModel: Model<User>,
-  ) { }
+  ) {}
   private readonly logger = new Logger(UsersService.name);
 
   async getAllUsers(): Promise<UserDto[]> {
@@ -100,4 +101,12 @@ export class UsersService {
     }
     return user;
   }
+
+  async insertCreateUser(dto: CreateUserDto) {
+    const newUser = new this.userModel(dto);
+
+    const result = await newUser.save();
+    return result;
+  }
 }
+
