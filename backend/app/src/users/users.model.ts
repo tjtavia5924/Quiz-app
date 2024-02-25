@@ -25,3 +25,4 @@ export interface User extends mongoose.Document {
   profile: string;
   points: number;
 }
+
